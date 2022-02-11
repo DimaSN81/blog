@@ -15,8 +15,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -41,7 +40,7 @@ class PostControllerV1Test {
                 .title("Music")
                 .content("Romantic")
                 .build();
-        when(postService.getAllPost()).thenReturn(List.of(postOne, postTwo));
+        when(postService.findAllPost()).thenReturn(List.of(postOne, postTwo));
         this.mockMvc.perform(MockMvcRequestBuilders
                         .get("/api/v1/posts"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -96,4 +95,89 @@ class PostControllerV1Test {
                 .andExpect(MockMvcResultMatchers.status().isOk());
         verify(postService).deletePostById(anyLong());
     }
+
+    @Test
+    @DisplayName("test on finding all posts by title")
+    public void getAllPostByTitleTest() throws Exception {
+        Post postOne = Post.builder()
+                .id(1L)
+                .title("Sport")
+                .content("Brazilian jiu-jitsu")
+                .build();
+        Post postTwo = Post.builder()
+                .id(2L)
+                .title("Music")
+                .content("Romantic")
+                .build();
+        Post postThree = Post.builder()
+                .id(3L)
+                .title("Develop")
+                .content("Java&Kotlin")
+                .build();
+        Post postFour = Post.builder()
+                .id(3L)
+                .title("Develop")
+                .content("Go")
+                .build();
+        when(postService.findByTitle("usi")).thenReturn(List.of(postTwo));
+        when(postService.findByTitle("evel")).thenReturn(List.of(postThree, postFour));
+        when(postService.findByTitle("Sport")).thenReturn(List.of(postOne));
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/v1/posts?title=evel"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(2)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("Develop"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].content").value("Java&Kotlin"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].title").value("Develop"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].content").value("Go"));
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/v1/posts?title=usi"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("Music"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].content").value("Romantic"));
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/v1/posts?title=Sport"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("Sport"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].content").value("Brazilian jiu-jitsu"));
+    }
+
+    @Test
+    @DisplayName("test on finding all posts by order by title")
+    public void getAllPostByOrderByTitleTest() throws Exception {
+        Post postOne = Post.builder()
+                .id(1L)
+                .title("Sport")
+                .content("Brazilian jiu-jitsu")
+                .build();
+        Post postTwo = Post.builder()
+                .id(2L)
+                .title("Develop")
+                .content("Java&Kotlin")
+                .build();
+        Post postThree = Post.builder()
+                .id(3L)
+                .title("Music")
+                .content("Romantic")
+                .build();
+        when(postService.findAllPost("asc")).thenReturn(List.of(postTwo, postThree, postOne));
+        when(postService.findAllPost("desc")).thenReturn(List.of(postOne, postThree, postTwo));
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/v1/posts?sort=asc"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(3)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("Develop"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].title").value("Music"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[2].title").value("Sport"));
+        this.mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/v1/posts?sort=desc"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(3)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("Sport"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].title").value("Music"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[2].title").value("Develop"));
+    }
+
 }

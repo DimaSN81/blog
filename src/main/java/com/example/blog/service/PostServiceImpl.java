@@ -16,9 +16,23 @@ public class PostServiceImpl implements PostService {
     Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
-    public List<Post> getAllPost() {
+    public List<Post> findAllPost() {
         logger.info("Post service - getting all posts");
         return postRepository.findAll();
+    }
+
+    @Override
+    public List<Post> findAllPost(String sort) {
+        if ("asc".equalsIgnoreCase(sort)) {
+            logger.info("Post service - finding all posts and order by title ascending");
+            return postRepository.findByOrderByTitleAsc();
+        } else if ("desc".equalsIgnoreCase(sort)) {
+            logger.info("Post service - finding all posts and order by title descending");
+            return postRepository.findByOrderByTitleDesc();
+        } else {
+            logger.info("Post service - getting all posts");
+            return postRepository.findAll();
+        }
     }
 
     @Override
@@ -38,5 +52,11 @@ public class PostServiceImpl implements PostService {
     public void deletePostById(long id) {
         logger.info("Post service - deleting post by id");
         postRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Post> findByTitle(String title) {
+        logger.info("Post service - finding posts by title");
+        return postRepository.findByTitleContainsIgnoreCase(title);
     }
 }
