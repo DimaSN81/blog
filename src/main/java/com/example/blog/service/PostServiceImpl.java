@@ -59,4 +59,22 @@ public class PostServiceImpl implements PostService {
         logger.info("Post service - finding posts by title");
         return postRepository.findByTitleContainsIgnoreCase(title);
     }
+
+    @Override
+    public List<Post> findByStar() {
+        logger.info("Post service - finding posts by star is true");
+        return postRepository.findByStarTrue();
+    }
+
+    @Override
+    public Post setStarInPostById(Long id) {
+        return postRepository.setStarById(id);
+    }
+
+    @Override
+    public Post deleteStarInPostById(Long id) {
+
+        return postRepository.deleteStarById(id);
+    }
+
 }

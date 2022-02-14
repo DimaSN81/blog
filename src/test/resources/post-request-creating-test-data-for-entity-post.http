@@ -3,25 +3,38 @@ Content-Type: application/json
 
 {
   "title": "Develop",
-  "content": "Java&Kotlin"
+  "content": "Java&Kotlin",
+  "star": false
 }
-
 ###
+
 POST http://localhost:8080/api/v1/posts
 Content-Type: application/json
 
 {
   "title": "Sport",
-  "content": "Brazilian jiu-jitsu"
+  "content": "Brazilian jiu-jitsu",
+  "star": false
 }
-
 ###
+
 POST http://localhost:8080/api/v1/posts
 Content-Type: application/json
 
 {
   "title": "Music",
-  "content": "Romantic"
-}
+  "content": "Romantic",
+  "star": false
 
+}
+###
+
+POST http://localhost:8080/api/v1/posts/1/comments
+Content-Type: application/json
+
+{
+  "text": "vghhv lhjbvdhrcsrchvhnhul ghghf fhkg",
+  "postId": 1
+
+}
 ###

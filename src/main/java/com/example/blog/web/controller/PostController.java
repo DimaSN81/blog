@@ -49,4 +49,28 @@ public class PostController {
         logger.info("Post controller - mapping on deleting post by id{}", id);
         postService.deletePostById(id);
     }
+
+    @GetMapping(path = "/star")
+    public List<Post> findAllPostsByStar() {
+        logger.info("Post controller - mapping for finding all post by star");
+        return postService.findByStar();
+    }
+
+    @PutMapping(path = "/{id}/star")
+    public Post setStarInPostById(@PathVariable long id) {
+        logger.info("Post controller - mapping put star by id {}", id);
+        return postService.setStarInPostById(id);
+    }
+
+    @DeleteMapping(path = "/{id}/star")
+    public Post deleteStarInPostById(@PathVariable long id) {
+        logger.info("Post controller - mapping delete star by id {}", id);
+        return postService.deleteStarInPostById(id);
+    }
+    @PutMapping(path = "/{id}")
+    public Post editPostId(@RequestBody Post post, @PathVariable long id) {
+        logger.info("Post controller - mapping on update post by id {}", id);
+        return postService.savePostById(post, id);
+    }
+
 }

@@ -18,4 +18,9 @@ public interface PostService {
 
     List<Post> findAllPost(String sort);
 
+    List<Post> findByStar();
+
+    Post setStarInPostById(Long id);
+
+    Post deleteStarInPostById(Long id);
 }

@@ -3,6 +3,10 @@ package com.example.blog.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -10,7 +14,9 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "post")
+@Table(name = "post", indexes = {
+        @Index(name = "idx_post_title", columnList = "title")
+})
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "post_seq_gen")
@@ -23,4 +29,11 @@ public class Post {
 
     @Column(name = "content")
     private String content;
+
+    @Column(name = "star", nullable = false)
+    private Boolean star;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+
 }

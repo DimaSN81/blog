@@ -3,7 +3,12 @@ Content-Type: application/json
 
 {
   "title": "Develop",
-  "content": "Java&Kotlin&Go"
+  "content": "Java&Kotlin&Go",
+  "star": false
 }
+###
+
+PUT http://localhost:8080/api/v1/posts/6/star
+Content-Type: application/json
 
 ###
